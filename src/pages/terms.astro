@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { SITE_CONFIG } from '../lib/config';
+import { generateWebPageSchema, generateBreadcrumbSchema } from '../lib/seo';
+
+const pageTitle = `Terms of Service — ${SITE_CONFIG.title}`;
+const pageDescription = `Review the Terms and Conditions for accessing and using EdgeBlog tutorials, content, and edge computing guides.`;
+const lastUpdated = 'November 18, 2026';
+
+const breadcrumbs = [
+  { name: 'Terms of Service', url: '/terms' }
+];
+
+const webPageSchema = generateWebPageSchema('Terms of Service', pageDescription, '/terms');
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  canonical={`${SITE_CONFIG.site_url}/terms`}
+  schema={webPageSchema}
+  breadcrumbSchema={breadcrumbSchema}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <header class="mb-10 pb-6 border-b border-slate-200">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold mb-3">
+        <span>📜 Legal Terms</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+        Terms of Service
+      </h1>
+      <p class="text-sm text-slate-500 mt-2">
+        Last updated on <time datetime="2026-11-18">{lastUpdated}</time>
+      </p>
+    </header>
+
+    <div class="prose prose-slate max-w-none text-base sm:text-lg leading-relaxed space-y-6">
+      <p>
+        Welcome to <strong>EdgeBlog</strong>. By accessing or using our website located at <code>{SITE_CONFIG.site_url}</code>, you agree to comply with and be bound by the following terms and conditions.
+      </p>
+
+      <h2>1. Intellectual Property & Fair Use</h2>
+      <p>
+        All content published on this blog, including technical articles, tutorials, sample code, graphics, and logos, is the property of EdgeBlog and protected by copyright and intellectual property laws. You may read, bookmark, and share excerpts with proper attribution and a backlink to the original article.
+      </p>
+
+      <h2>2. Accuracy of Information & Disclaimer</h2>
+      <p>
+        The tutorials and articles provided on EdgeBlog are for educational and informational purposes only. While we strive to maintain high accuracy and up-to-date best practices, technology and APIs evolve rapidly. We make no representations or warranties regarding the completeness or suitability of the information.
+      </p>
+
+      <h2>3. Code License</h2>
+      <p>
+        Code snippets published within articles are provided under the MIT License unless stated otherwise. You are free to integrate code examples into your personal or commercial projects.
+      </p>
+
+      <h2>4. External Links</h2>
+      <p>
+        Our articles may contain links to third-party websites or services that are not owned or controlled by EdgeBlog. We have no control over and assume no responsibility for the content, privacy policies, or practices of any third-party sites.
+      </p>
+
+      <h2>5. Changes to These Terms</h2>
+      <p>
+        We reserve the right to revise or update these Terms of Service at any time. Any changes will be posted on this page with an updated modification date.
+      </p>
+
+      <h2>6. Contact Us</h2>
+      <p>
+        If you have questions about these Terms of Service, please reach out via our <a href="/contact">Contact Page</a>.
+      </p>
+    </div>
+  </div>
+</BaseLayout>

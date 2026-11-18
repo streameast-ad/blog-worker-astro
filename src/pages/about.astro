@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { SITE_CONFIG } from '../lib/config';
+import { generateWebPageSchema, generateBreadcrumbSchema } from '../lib/seo';
+
+const pageTitle = `About Us & Editorial Standards — ${SITE_CONFIG.title}`;
+const pageDescription = `Learn about EdgeBlog, our mission to advance modern edge computing, and our commitment to high-speed web performance and technical accuracy.`;
+
+const breadcrumbs = [
+  { name: 'About Us', url: '/about' }
+];
+
+const webPageSchema = generateWebPageSchema('About Us', pageDescription, '/about');
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+---
+
+<BaseLayout
+  title={pageTitle}
+  description={pageDescription}
+  canonical={`${SITE_CONFIG.site_url}/about`}
+  schema={webPageSchema}
+  breadcrumbSchema={breadcrumbSchema}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <header class="mb-10 pb-6 border-b border-slate-200">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs font-semibold mb-3">
+        <span>🚀 About EdgeBlog</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+        Empowering Next-Gen Edge Web Performance
+      </h1>
+      <p class="text-base sm:text-lg text-slate-600 mt-2">
+        Building ultra-fast, distributed web architectures on Cloudflare Workers and modern headless frameworks.
+      </p>
+    </header>
+
+    <!-- Author Profile Highlight -->
+    <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm mb-12 flex flex-col sm:flex-row items-center sm:items-start gap-6">
+      <img
+        src={SITE_CONFIG.author.avatar}
+        alt={SITE_CONFIG.author.name}
+        class="w-24 h-24 rounded-full object-cover ring-4 ring-blue-50 shadow-md flex-shrink-0"
+      />
+      <div>
+        <div class="text-xs font-bold uppercase tracking-wider text-blue-600">Lead Technical Author & Architect</div>
+        <h2 class="text-xl font-bold text-slate-900 mt-1">{SITE_CONFIG.author.name}</h2>
+        <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+          {SITE_CONFIG.author.bio}
+        </p>
+        <div class="mt-4 flex items-center gap-3 text-xs font-semibold text-slate-500">
+          <span class="px-2.5 py-1 bg-slate-100 rounded-md">Cloudflare Certified</span>
+          <span class="px-2.5 py-1 bg-slate-100 rounded-md">Core Web Vitals Specialist</span>
+          <span class="px-2.5 py-1 bg-slate-100 rounded-md">Open Source Contributor</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Editorial & Accuracy Standards -->
+    <div class="prose prose-slate max-w-none text-base sm:text-lg leading-relaxed space-y-6">
+      <h2>Our Mission</h2>
+      <p>
+        Traditional centralized web hosting is rapidly being replaced by distributed edge runtimes. <strong>EdgeBlog</strong> was established to document and share battle-tested patterns for deploying serverless web applications with microsecond latency, zero infrastructure maintenance, and top search engine rankings.
+      </p>
+
+      <h2>Our Editorial Standards (E-E-A-T)</h2>
+      <p>
+        To ensure every visitor receives accurate, high-value technical guidance:
+      </p>
+      <ul>
+        <li><strong>Hands-on Verification:</strong> Every tutorial, benchmark, and configuration snippet is tested before publication.</li>
+        <li><strong>Strict Web Vitals Compliance:</strong> We practice what we preach—achieving near-perfect 100/100 scores on Google PageSpeed Insights.</li>
+        <li><strong>Regular Updates:</strong> As Cloudflare and Google search algorithms evolve, our articles are routinely revisited and updated.</li>
+      </ul>
+
+      <h2>Technology Behind This Blog</h2>
+      <p>
+        This entire website runs on the cutting-edge edge stack:
+      </p>
+      <ul>
+        <li><strong>Hosting:</strong> Cloudflare Workers (Global CDN & Edge compute)</li>
+        <li><strong>Database:</strong> Cloudflare Workers KV (Key-Value store)</li>
+        <li><strong>Framework:</strong> Astro SSR (Zero-JS footprint by default)</li>
+        <li><strong>Styling:</strong> Tailwind CSS</li>
+      </ul>
+
+      <div class="mt-8 pt-6 border-t border-slate-200">
+        <p class="text-sm text-slate-500">
+          Want to collaborate, report an issue, or ask a question? Visit our <a href="/contact">Contact Page</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

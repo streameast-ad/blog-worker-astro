@@ -1,0 +1,215 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getPostBySlug } from '../../lib/kv';
+import { renderMarkdown } from '../../lib/markdown';
+import { generateArticleSchema, generateBreadcrumbSchema } from '../../lib/seo';
+import { SITE_CONFIG } from '../../lib/config';
+
+const { slug } = Astro.params;
+
+if (!slug) {
+  return Astro.redirect('/404');
+}
+
+const post = await getPostBySlug(slug);
+
+if (!post || (post.status !== 'published')) {
+  return new Response('Article not found', { status: 404 });
+}
+
+// Render markdown to HTML
+const htmlContent = await renderMarkdown(post.content);
+
+// Formatted Dates
+const publishDate = new Date(post.published_at).toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+const modifiedDate = post.updated_at
+  ? new Date(post.updated_at).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  : null;
+
+// Schemas
+const articleSchema = generateArticleSchema(post);
+const breadcrumbs = [
+  { name: 'Articles', url: '/#articles' },
+  { name: post.title, url: `/post/${post.slug}` }
+];
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+
+// Canonical & Share URLs
+const pageUrl = `${SITE_CONFIG.site_url}/post/${post.slug}`;
+const encodedUrl = encodeURIComponent(pageUrl);
+const encodedTitle = encodeURIComponent(post.title);
+---
+
+<BaseLayout
+  title={post.seo?.meta_title || `${post.title} — ${SITE_CONFIG.title}`}
+  description={post.seo?.meta_description || post.excerpt}
+  canonical={post.seo?.canonical_url || pageUrl}
+  ogImage={post.seo?.og_image || post.featured_image || SITE_CONFIG.og_default_image}
+  ogType="article"
+  publishedTime={post.published_at}
+  modifiedTime={post.updated_at}
+  section={post.category}
+  tags={post.tags}
+  noindex={post.seo?.no_index}
+  schema={articleSchema}
+  breadcrumbSchema={breadcrumbSchema}
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <!-- Breadcrumbs -->
+    <Breadcrumbs items={breadcrumbs} />
+
+    <!-- Article Header -->
+    <header class="mb-10">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="px-3 py-1 text-xs font-semibold uppercase tracking-wider bg-blue-100 text-blue-800 rounded-full">
+          {post.category || 'General'}
+        </span>
+        <span class="text-xs text-slate-500">•</span>
+        <span class="text-xs text-slate-500 font-medium">⏱️ {post.reading_time_minutes} min read</span>
+      </div>
+
+      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+        {post.title}
+      </h1>
+
+      <p class="mt-4 text-lg text-slate-600 leading-relaxed">
+        {post.excerpt}
+      </p>
+
+      <!-- Author and Metadata Bar (E-E-A-T) -->
+      <div class="mt-6 pt-6 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          {post.author?.avatar && (
+            <img
+              src={post.author.avatar}
+              alt={post.author.name}
+              class="w-11 h-11 rounded-full object-cover ring-2 ring-slate-200"
+              loading="lazy"
+            />
+          )}
+          <div>
+            <div class="font-bold text-slate-900 text-sm">
+              {post.author?.name || SITE_CONFIG.author.name}
+            </div>
+            <div class="text-xs text-slate-500 flex items-center gap-1.5 mt-0.5">
+              <span>Published on</span>
+              <time datetime={post.published_at}>{publishDate}</time>
+              {modifiedDate && modifiedDate !== publishDate && (
+                <>
+                  <span>•</span>
+                  <span>Updated on <time datetime={post.updated_at}>{modifiedDate}</time></span>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <!-- Social Share Buttons -->
+        <div class="flex items-center gap-2 text-xs font-medium text-slate-600">
+          <span class="hidden sm:inline">Share:</span>
+          <a
+            href={`https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+            title="Share on X (Twitter)"
+          >
+            𝕏
+          </a>
+          <a
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+            title="Share on LinkedIn"
+          >
+            in
+          </a>
+          <a
+            href={`https://api.whatsapp.com/send?text=${encodedTitle}%20${encodedUrl}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
+            title="Share on WhatsApp"
+          >
+            WA
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Featured Image -->
+    {post.featured_image && (
+      <figure class="mb-12 rounded-2xl overflow-hidden shadow-lg border border-slate-200 bg-slate-100 aspect-video">
+        <img
+          src={post.featured_image}
+          alt={post.featured_image_alt || post.title}
+          class="w-full h-full object-cover"
+          loading="eager"
+          decoding="async"
+        />
+        {post.featured_image_alt && (
+          <figcaption class="text-xs text-slate-500 text-center py-2 bg-slate-50 border-t border-slate-100">
+            {post.featured_image_alt}
+          </figcaption>
+        )}
+      </figure>
+    )}
+
+    <!-- Article Body -->
+    <div class="prose prose-slate max-w-none text-base sm:text-lg leading-relaxed" set:html={htmlContent} />
+
+    <!-- Tags List -->
+    {post.tags && post.tags.length > 0 && (
+      <div class="mt-12 pt-6 border-t border-slate-200">
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Related Tags</h3>
+        <div class="flex flex-wrap gap-2">
+          {post.tags.map((tag) => (
+            <span class="px-3 py-1 text-xs font-medium bg-slate-100 text-slate-700 rounded-lg">
+              #{tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- Author Bio Box (Google E-E-A-T Standard) -->
+    <div class="mt-12 bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center sm:items-start gap-5">
+      {post.author?.avatar && (
+        <img
+          src={post.author.avatar}
+          alt={post.author.name}
+          class="w-16 h-16 rounded-full object-cover ring-4 ring-blue-50 flex-shrink-0"
+        />
+      )}
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-blue-600">Article Author</span>
+        </div>
+        <h4 class="text-lg font-bold text-slate-900 mt-1">{post.author?.name || SITE_CONFIG.author.name}</h4>
+        <p class="text-sm text-slate-600 mt-2 leading-relaxed">
+          {post.author?.bio || SITE_CONFIG.author.bio}
+        </p>
+      </div>
+    </div>
+
+    <!-- Back to Articles -->
+    <div class="mt-12 text-center">
+      <a
+        href="/#articles"
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition-colors"
+      >
+        ← Back to all articles
+      </a>
+    </div>
+  </div>
+</BaseLayout>

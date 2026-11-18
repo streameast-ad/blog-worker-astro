@@ -1,0 +1,32 @@
+{
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"compatibility_date": "2026-11-16",
+	"compatibility_flags": ["global_fetch_strictly_public", "nodejs_compat"],
+	"name": "blog-worker-astro",
+	"main": "@astrojs/cloudflare/entrypoints/server",
+	"assets": {
+		"directory": "./dist",
+		"binding": "ASSETS"
+	},
+	"kv_namespaces": [
+		{
+			"binding": "BLOG_KV",
+			"id": "dbfb786d8bea446d9732ab4e144a0b4c"
+		}
+	],
+	"r2_buckets": [
+		{
+			"binding": "IMAGES_BUCKET",
+			"bucket_name": "blog-worker-astro-images"
+		}
+	],
+	"vars": {
+		"ADMIN_PASSWORD": "admin_change_this_secret_password",
+		"SITE_TITLE": "EdgeBlog - High Performance SEO Blog",
+		"SITE_DESCRIPTION": "Ultra-fast modern blog hosted on Cloudflare Workers and KV with latest Google SEO standards.",
+		"SITE_URL": "https://blog-worker-astro.vipinkumarkatiyar.workers.dev"
+	},
+	"observability": {
+		"enabled": true
+	}
+}

@@ -1,0 +1,825 @@
+---
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Create New Article">
+  <div class="max-w-6xl mx-auto">
+    <div id="alert-box" class="hidden mb-6 p-4 rounded-xl text-sm font-medium"></div>
+
+    <form id="post-form" class="space-y-8">
+      <!-- Section 1: Main Content -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
+        <div class="border-b border-slate-200 pb-4">
+          <h2 class="text-base font-bold text-slate-900">Article Content</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Write your article using the visual toolbar below or markdown</p>
+        </div>
+
+        <!-- Title -->
+        <div>
+          <label for="title" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+            Post Title <span class="text-rose-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="title"
+            name="title"
+            required
+            placeholder="e.g. How to Build an Ultra Fast Blog on Cloudflare Workers"
+            class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-base font-semibold focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+          />
+        </div>
+
+        <!-- Slug & Status -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="md:col-span-2">
+            <label for="slug" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              URL Slug <span class="text-rose-500">*</span>
+            </label>
+            <div class="flex rounded-lg shadow-sm">
+              <span class="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-slate-300 bg-slate-50 text-slate-500 text-xs font-mono">
+                /post/
+              </span>
+              <input
+                type="text"
+                id="slug"
+                name="slug"
+                required
+                placeholder="how-to-build-ultra-fast-blog"
+                class="flex-1 min-w-0 block w-full px-4 py-2.5 rounded-none rounded-r-lg border border-slate-300 text-xs font-mono focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+              />
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1">Unique URL identifier for this post.</p>
+          </div>
+
+          <div>
+            <label for="status" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              Publish Status
+            </label>
+            <select
+              id="status"
+              name="status"
+              class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-xs font-semibold focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all bg-white"
+            >
+              <option value="published">🚀 Published (Live)</option>
+              <option value="draft">📝 Draft (Unpublished)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Excerpt -->
+        <div>
+          <label for="excerpt" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+            Excerpt / Summary <span class="text-rose-500">*</span>
+          </label>
+          <textarea
+            id="excerpt"
+            name="excerpt"
+            rows="2"
+            required
+            placeholder="A compelling 1-2 sentence overview of the article for cards and social sharing..."
+            class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+          ></textarea>
+        </div>
+
+        <!-- FULL-FLEDGED VISUAL EDITOR SECTION -->
+        <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-slate-50/50">
+          <!-- Editor Toolbar Header -->
+          <div class="bg-white border-b border-slate-200 p-2.5 flex flex-wrap items-center justify-between gap-2">
+            <!-- Left formatting tools -->
+            <div class="flex flex-wrap items-center gap-1">
+              <!-- Headings -->
+              <button type="button" data-action="h2" class="tool-btn px-2.5 py-1 text-xs font-bold rounded hover:bg-slate-100 text-slate-700" title="Heading 2">H2</button>
+              <button type="button" data-action="h3" class="tool-btn px-2.5 py-1 text-xs font-bold rounded hover:bg-slate-100 text-slate-700" title="Heading 3">H3</button>
+
+              <span class="w-px h-5 bg-slate-200 mx-1"></span>
+
+              <!-- Text Styling -->
+              <button type="button" data-action="bold" class="tool-btn px-2.5 py-1 text-xs font-bold rounded hover:bg-slate-100 text-slate-700" title="Bold (**text**)">B</button>
+              <button type="button" data-action="italic" class="tool-btn px-2.5 py-1 text-xs italic font-serif rounded hover:bg-slate-100 text-slate-700" title="Italic (*text*)">I</button>
+              <button type="button" data-action="underline" class="tool-btn px-2.5 py-1 text-xs underline rounded hover:bg-slate-100 text-slate-700" title="Underline">U</button>
+              <button type="button" data-action="strike" class="tool-btn px-2.5 py-1 text-xs line-through rounded hover:bg-slate-100 text-slate-700" title="Strikethrough">S</button>
+
+              <span class="w-px h-5 bg-slate-200 mx-1"></span>
+
+              <!-- Lists -->
+              <button type="button" data-action="bullet-list" class="tool-btn px-2 py-1 text-xs rounded hover:bg-slate-100 text-slate-700" title="Bullet List">• List</button>
+              <button type="button" data-action="number-list" class="tool-btn px-2 py-1 text-xs rounded hover:bg-slate-100 text-slate-700" title="Numbered List">1. List</button>
+
+              <span class="w-px h-5 bg-slate-200 mx-1"></span>
+
+              <!-- Media & Special -->
+              <button type="button" id="open-img-modal-btn" class="px-3 py-1 text-xs font-bold rounded bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-1.5 shadow-sm transition-all" title="Upload Image or Insert Link">
+                <span>☁️ R2</span> Insert Image
+              </button>
+              <button type="button" id="open-link-btn" class="tool-btn px-2.5 py-1 text-xs rounded hover:bg-slate-100 text-slate-700" title="Insert Link">🔗 Link</button>
+              <button type="button" data-action="quote" class="tool-btn px-2.5 py-1 text-xs rounded hover:bg-slate-100 text-slate-700" title="Quote Box">❝ Quote</button>
+              <button type="button" data-action="table" class="tool-btn px-2.5 py-1 text-xs rounded hover:bg-slate-100 text-slate-700" title="Insert Table">📊 Table</button>
+              <button type="button" data-action="code" class="tool-btn px-2.5 py-1 text-xs font-mono rounded hover:bg-slate-100 text-slate-700" title="Code Block">&lt;/&gt;</button>
+              <button type="button" data-action="hr" class="tool-btn px-2 py-1 text-xs rounded hover:bg-slate-100 text-slate-700" title="Horizontal Line">➖ Divider</button>
+            </div>
+
+            <!-- Right view toggle buttons -->
+            <div class="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg border border-slate-200">
+              <button type="button" id="tab-write" class="px-3 py-1 text-xs font-semibold rounded-md bg-white text-slate-800 shadow-xs">
+                ✏️ Write
+              </button>
+              <button type="button" id="tab-preview" class="px-3 py-1 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900">
+                👁️ Live Preview
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Stock Image Suggestions -->
+          <div class="bg-blue-50/70 border-b border-blue-100 px-4 py-2 flex items-center justify-between text-xs text-blue-900 overflow-x-auto gap-3">
+            <span class="font-medium whitespace-nowrap">💡 Presets:</span>
+            <div class="flex items-center gap-2 whitespace-nowrap">
+              <button type="button" class="preset-img-btn hover:underline text-blue-700 font-medium" data-url="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&h=630&q=80" data-alt="Global Edge Computing Cloud">
+                + Global Network
+              </button>
+              <span>•</span>
+              <button type="button" class="preset-img-btn hover:underline text-blue-700 font-medium" data-url="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&h=630&q=80" data-alt="High Speed Server Infrastructure">
+                + Datacenter
+              </button>
+              <span>•</span>
+              <button type="button" class="preset-img-btn hover:underline text-blue-700 font-medium" data-url="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&h=630&q=80" data-alt="Analytics and Search Performance">
+                + SEO Analytics
+              </button>
+            </div>
+          </div>
+
+          <!-- Write Area Container -->
+          <div id="write-panel" class="p-0">
+            <textarea
+              id="content"
+              name="content"
+              rows="16"
+              required
+              placeholder="Write your article content here...
+
+## Getting Started
+
+Click '☁️ R2 Insert Image' above to upload photos directly from your computer into Cloudflare R2 storage!
+
+Write your paragraphs here with clear, engaging explanations."
+              class="w-full p-5 bg-white border-0 text-sm font-sans leading-relaxed focus:ring-0 focus:outline-none min-h-[350px]"
+            ></textarea>
+          </div>
+
+          <!-- Live Preview Area Container (Hidden by default) -->
+          <div id="preview-panel" class="hidden p-6 bg-white min-h-[350px]">
+            <div id="preview-render" class="prose prose-slate max-w-none text-base leading-relaxed"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Media & Categorization -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 sm:p-8 space-y-6">
+        <div class="border-b border-slate-200 pb-4">
+          <h2 class="text-base font-bold text-slate-900">Featured Media & Author</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Upload a cover image directly to Cloudflare R2 or paste a link</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="featured_image" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              Featured Cover Image URL
+            </label>
+            <div class="flex gap-2">
+              <input
+                type="text"
+                id="featured_image"
+                name="featured_image"
+                placeholder="https://... or click Upload"
+                class="flex-1 px-4 py-2.5 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+              />
+              <label class="cursor-pointer px-3 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors whitespace-nowrap">
+                <span>📁 Upload</span>
+                <input type="file" id="cover-file-input" accept="image/*" class="hidden" />
+              </label>
+            </div>
+            <p id="cover-upload-status" class="text-[11px] text-slate-400 mt-1">Upload directly to Cloudflare R2 bucket.</p>
+          </div>
+
+          <div>
+            <label for="featured_image_alt" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              Cover Image Alt Text (SEO Accessibility)
+            </label>
+            <input
+              type="text"
+              id="featured_image_alt"
+              name="featured_image_alt"
+              placeholder="Descriptive text for Google Image Search"
+              class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="category" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              Category
+            </label>
+            <input
+              type="text"
+              id="category"
+              name="category"
+              placeholder="e.g. Cloudflare, SEO, WebDev"
+              class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+            />
+          </div>
+
+          <div>
+            <label for="tags" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              Tags (Comma separated)
+            </label>
+            <input
+              type="text"
+              id="tags"
+              name="tags"
+              placeholder="Workers, KV, Fast, Performance"
+              class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-slate-100">
+          <div>
+            <label for="author_name" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              Author Name
+            </label>
+            <input
+              type="text"
+              id="author_name"
+              name="author_name"
+              placeholder="Admin Team"
+              class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+            />
+          </div>
+
+          <div class="md:col-span-2">
+            <label for="author_bio" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              Author Short Bio (E-E-A-T)
+            </label>
+            <input
+              type="text"
+              id="author_bio"
+              name="author_bio"
+              placeholder="Edge computing engineer & technical author"
+              class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Advanced Google SEO Control (2026 Ready) -->
+      <div class="bg-gradient-to-br from-white to-blue-50/40 rounded-xl border border-blue-200/80 shadow-sm p-6 sm:p-8 space-y-6">
+        <div class="border-b border-blue-200/60 pb-4 flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-blue-600 text-lg">🔍</span>
+              <h2 class="text-base font-bold text-slate-900">Advanced Google SEO Controls (2026 Standards)</h2>
+            </div>
+            <p class="text-xs text-slate-500 mt-0.5">Customize meta tags, OpenGraph previews, and indexing instructions</p>
+          </div>
+          <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-100 text-blue-800">
+            SEO Optimizer
+          </span>
+        </div>
+
+        <!-- Google SERP Live Simulation Preview -->
+        <div class="p-5 rounded-xl bg-white border border-slate-200 shadow-inner">
+          <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-3">
+            Google Search Snippet Preview
+          </div>
+          <div class="font-sans max-w-xl">
+            <div class="text-xs text-slate-700 flex items-center gap-1.5 mb-1">
+              <span class="w-4 h-4 rounded-full bg-blue-600 flex items-center justify-center text-white text-[9px] font-bold">⚡</span>
+              <span class="font-medium text-slate-800">EdgeBlog</span>
+              <span class="text-slate-400">› post › <span id="preview-slug">post-slug</span></span>
+            </div>
+            <div id="preview-title" class="text-blue-700 text-lg font-medium hover:underline cursor-pointer truncate">
+              Post Title Will Appear Here
+            </div>
+            <div id="preview-desc" class="text-xs text-slate-600 mt-1 line-clamp-2 leading-relaxed">
+              Meta description will appear here. Write a clear, keyword-rich summary that encourages users to click from Google Search results.
+            </div>
+          </div>
+        </div>
+
+        <!-- Meta Title -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label for="meta_title" class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+              SEO Meta Title
+            </label>
+            <span id="title-counter" class="text-[11px] text-slate-400 font-mono">0 / 60 chars</span>
+          </div>
+          <input
+            type="text"
+            id="meta_title"
+            name="meta_title"
+            placeholder="Leave empty to use main post title automatically"
+            class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+          />
+          <p class="text-[11px] text-slate-400 mt-1">Recommended length: 50–60 characters.</p>
+        </div>
+
+        <!-- Meta Description -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label for="meta_description" class="block text-xs font-bold uppercase tracking-wider text-slate-700">
+              SEO Meta Description
+            </label>
+            <span id="desc-counter" class="text-[11px] text-slate-400 font-mono">0 / 160 chars</span>
+          </div>
+          <textarea
+            id="meta_description"
+            name="meta_description"
+            rows="3"
+            placeholder="Leave empty to use excerpt automatically"
+            class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+          ></textarea>
+          <p class="text-[11px] text-slate-400 mt-1">Recommended length: 140–160 characters.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="canonical_url" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              Custom Canonical URL
+            </label>
+            <input
+              type="url"
+              id="canonical_url"
+              name="canonical_url"
+              placeholder="Defaults automatically to standard /post/ permalink"
+              class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+            />
+          </div>
+
+          <div>
+            <label for="og_image" class="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
+              Custom OpenGraph Image URL
+            </label>
+            <input
+              type="url"
+              id="og_image"
+              name="og_image"
+              placeholder="Defaults to featured image"
+              class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+            />
+          </div>
+        </div>
+
+        <!-- NoIndex Toggle -->
+        <div class="pt-2">
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              id="no_index"
+              name="no_index"
+              class="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
+            />
+            <span class="text-xs font-semibold text-slate-700">
+              NoIndex this post (Instruct Googlebot NOT to index this page)
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Submit Bar -->
+      <div class="flex items-center justify-end gap-4 pt-4 border-t border-slate-200">
+        <a
+          href="/admin/posts"
+          class="px-5 py-2.5 rounded-lg border border-slate-300 text-slate-700 text-xs font-semibold hover:bg-slate-50 transition-all"
+        >
+          Cancel
+        </a>
+        <button
+          type="submit"
+          id="submit-btn"
+          class="px-6 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-md shadow-blue-500/20 transition-all flex items-center gap-2"
+        >
+          <span>Save Post to Cloudflare KV</span>
+          <span>⚡</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- INSERT IMAGE MODAL DIALOG (Cloudflare R2 Direct Upload & Presets) -->
+  <div id="img-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-200">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 class="font-bold text-slate-900 text-base flex items-center gap-2">
+          <span>☁️</span> Insert Image (Cloudflare R2)
+        </h3>
+        <button type="button" id="close-img-modal-btn" class="text-slate-400 hover:text-slate-700 text-lg font-bold">✕</button>
+      </div>
+
+      <div class="space-y-4 my-5">
+        <!-- R2 File Upload Tab / Option -->
+        <div class="p-4 rounded-xl border-2 border-dashed border-blue-200 bg-blue-50/40 text-center">
+          <div class="text-2xl mb-1">📤</div>
+          <p class="text-xs font-bold text-slate-700 mb-1">Upload File from Your Device</p>
+          <p class="text-[11px] text-slate-500 mb-3">PNG, JPG, WEBP, GIF, SVG (Stored directly on Cloudflare R2)</p>
+          <label class="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg cursor-pointer shadow-sm transition-all">
+            <span>Choose Image</span>
+            <input type="file" id="modal-file-input" accept="image/*" class="hidden" />
+          </label>
+          <div id="modal-upload-status" class="text-xs font-semibold text-blue-800 mt-2 hidden"></div>
+        </div>
+
+        <div class="text-center text-xs text-slate-400 font-semibold uppercase tracking-wider">— OR PASTE URL —</div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Image URL</label>
+          <input
+            type="text"
+            id="modal-img-url"
+            placeholder="https://... or auto-filled via R2 upload"
+            class="w-full px-3.5 py-2 rounded-lg border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-blue-500 font-mono"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Alt Text / Description (SEO Friendly) <span class="text-rose-500">*</span></label>
+          <input
+            type="text"
+            id="modal-img-alt"
+            placeholder="e.g. Cloudflare Workers global network diagram"
+            class="w-full px-3.5 py-2 rounded-lg border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <!-- Live Image Preview Box -->
+        <div id="modal-img-preview-box" class="hidden border border-slate-200 rounded-lg p-2 bg-slate-50">
+          <span class="text-[10px] font-bold text-slate-400 uppercase block mb-1">Preview:</span>
+          <img id="modal-img-preview" src="" alt="preview" class="max-h-48 mx-auto rounded object-contain" />
+        </div>
+      </div>
+
+      <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+        <button type="button" id="cancel-img-modal-btn" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">
+          Cancel
+        </button>
+        <button type="button" id="insert-img-confirm-btn" class="px-5 py-2 text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm">
+          Insert into Post
+        </button>
+      </div>
+    </div>
+  </div>
+</AdminLayout>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<script>
+  // DOM Elements
+  const form = document.getElementById('post-form') as HTMLFormElement;
+  const titleInput = document.getElementById('title') as HTMLInputElement;
+  const slugInput = document.getElementById('slug') as HTMLInputElement;
+  const excerptInput = document.getElementById('excerpt') as HTMLTextAreaElement;
+  const contentInput = document.getElementById('content') as HTMLTextAreaElement;
+  const metaTitleInput = document.getElementById('meta_title') as HTMLInputElement;
+  const metaDescInput = document.getElementById('meta_description') as HTMLTextAreaElement;
+
+  const previewTitle = document.getElementById('preview-title') as HTMLElement;
+  const previewSlug = document.getElementById('preview-slug') as HTMLElement;
+  const previewDesc = document.getElementById('preview-desc') as HTMLElement;
+
+  const titleCounter = document.getElementById('title-counter') as HTMLElement;
+  const descCounter = document.getElementById('desc-counter') as HTMLElement;
+  const alertBox = document.getElementById('alert-box') as HTMLElement;
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+
+  // Tabs
+  const tabWrite = document.getElementById('tab-write') as HTMLButtonElement;
+  const tabPreview = document.getElementById('tab-preview') as HTMLButtonElement;
+  const writePanel = document.getElementById('write-panel') as HTMLElement;
+  const previewPanel = document.getElementById('preview-panel') as HTMLElement;
+  const previewRender = document.getElementById('preview-render') as HTMLElement;
+
+  // Image Modal Elements
+  const imgModal = document.getElementById('img-modal') as HTMLElement;
+  const openImgModalBtn = document.getElementById('open-img-modal-btn') as HTMLButtonElement;
+  const closeImgModalBtn = document.getElementById('close-img-modal-btn') as HTMLButtonElement;
+  const cancelImgModalBtn = document.getElementById('cancel-img-modal-btn') as HTMLButtonElement;
+  const insertImgConfirmBtn = document.getElementById('insert-img-confirm-btn') as HTMLButtonElement;
+  const modalImgUrl = document.getElementById('modal-img-url') as HTMLInputElement;
+  const modalImgAlt = document.getElementById('modal-img-alt') as HTMLInputElement;
+  const modalImgPreviewBox = document.getElementById('modal-img-preview-box') as HTMLElement;
+  const modalImgPreview = document.getElementById('modal-img-preview') as HTMLImageElement;
+  const modalFileInput = document.getElementById('modal-file-input') as HTMLInputElement;
+  const modalUploadStatus = document.getElementById('modal-upload-status') as HTMLElement;
+
+  // Cover image direct upload
+  const coverFileInput = document.getElementById('cover-file-input') as HTMLInputElement;
+  const featuredImageInput = document.getElementById('featured_image') as HTMLInputElement;
+  const coverUploadStatus = document.getElementById('cover-upload-status') as HTMLElement;
+
+  // Auto slug generation from title
+  let manualSlug = false;
+  slugInput.addEventListener('input', () => { manualSlug = true; });
+
+  titleInput.addEventListener('input', () => {
+    if (!manualSlug) {
+      slugInput.value = titleInput.value
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+    }
+    updatePreview();
+  });
+
+  slugInput.addEventListener('input', updatePreview);
+  excerptInput.addEventListener('input', updatePreview);
+  metaTitleInput.addEventListener('input', updatePreview);
+  metaDescInput.addEventListener('input', updatePreview);
+
+  function updatePreview() {
+    const titleVal = metaTitleInput.value.trim() || titleInput.value.trim() || 'Post Title Will Appear Here';
+    const slugVal = slugInput.value.trim() || 'post-slug';
+    const descVal = metaDescInput.value.trim() || excerptInput.value.trim() || 'Meta description will appear here. Write a clear, keyword-rich summary that encourages users to click from Google Search results.';
+
+    previewTitle.textContent = titleVal;
+    previewSlug.textContent = slugVal;
+    previewDesc.textContent = descVal;
+
+    titleCounter.textContent = `${metaTitleInput.value.length} / 60 chars`;
+    if (metaTitleInput.value.length > 60) {
+      titleCounter.classList.add('text-amber-600', 'font-bold');
+    } else {
+      titleCounter.classList.remove('text-amber-600', 'font-bold');
+    }
+
+    descCounter.textContent = `${metaDescInput.value.length} / 160 chars`;
+    if (metaDescInput.value.length > 160) {
+      descCounter.classList.add('text-amber-600', 'font-bold');
+    } else {
+      descCounter.classList.remove('text-amber-600', 'font-bold');
+    }
+  }
+
+  // Formatting Helper
+  function insertFormatting(prefix: string, suffix: string = '', defaultText: string = '') {
+    const start = contentInput.selectionStart;
+    const end = contentInput.selectionEnd;
+    const text = contentInput.value;
+    const selected = text.substring(start, end) || defaultText;
+
+    contentInput.value = text.substring(0, start) + prefix + selected + suffix + text.substring(end);
+    contentInput.focus();
+    contentInput.setSelectionRange(start + prefix.length, start + prefix.length + selected.length);
+  }
+
+  // Handle Toolbar Buttons
+  document.querySelectorAll('.tool-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const action = (e.currentTarget as HTMLElement).dataset.action;
+      switch (action) {
+        case 'h2':
+          insertFormatting('\n## ', '\n', 'Section Heading');
+          break;
+        case 'h3':
+          insertFormatting('\n### ', '\n', 'Sub-section Heading');
+          break;
+        case 'bold':
+          insertFormatting('**', '**', 'bold text');
+          break;
+        case 'italic':
+          insertFormatting('*', '*', 'italic text');
+          break;
+        case 'underline':
+          insertFormatting('<u>', '</u>', 'underlined text');
+          break;
+        case 'strike':
+          insertFormatting('~~', '~~', 'strikethrough text');
+          break;
+        case 'bullet-list':
+          insertFormatting('\n- ', '\n', 'List item');
+          break;
+        case 'number-list':
+          insertFormatting('\n1. ', '\n', 'First item');
+          break;
+        case 'quote':
+          insertFormatting('\n> ', '\n', 'Important note or quote here');
+          break;
+        case 'code':
+          insertFormatting('\n```javascript\n', '\n```\n', '// Your code snippet here');
+          break;
+        case 'hr':
+          insertFormatting('\n\n---\n\n');
+          break;
+        case 'table':
+          insertFormatting('\n| Feature | Description | Status |\n| :--- | :--- | :--- |\n| Edge Compute | 300+ Locations | Active |\n| KV Store | Sub-50ms reads | Active |\n\n');
+          break;
+      }
+    });
+  });
+
+  // Link inserter button
+  document.getElementById('open-link-btn')?.addEventListener('click', () => {
+    const url = prompt('Enter link URL (e.g. https://example.com):', 'https://');
+    if (url) {
+      const label = prompt('Enter link display text:', 'Click here');
+      insertFormatting(`[${label || 'Link'}](${url})`);
+    }
+  });
+
+  // Image Modal Controls
+  openImgModalBtn.addEventListener('click', () => {
+    imgModal.classList.remove('hidden');
+    modalImgUrl.value = '';
+    modalImgAlt.value = '';
+    modalUploadStatus.classList.add('hidden');
+    modalImgPreviewBox.classList.add('hidden');
+  });
+
+  function closeImgModal() {
+    imgModal.classList.add('hidden');
+  }
+
+  closeImgModalBtn.addEventListener('click', closeImgModal);
+  cancelImgModalBtn.addEventListener('click', closeImgModal);
+
+  modalImgUrl.addEventListener('input', () => {
+    const url = modalImgUrl.value.trim();
+    if (url.startsWith('http') || url.startsWith('/')) {
+      modalImgPreview.src = url;
+      modalImgPreviewBox.classList.remove('hidden');
+    } else {
+      modalImgPreviewBox.classList.add('hidden');
+    }
+  });
+
+  // Upload to R2 via Modal
+  modalFileInput.addEventListener('change', async () => {
+    const file = modalFileInput.files?.[0];
+    if (!file) return;
+
+    modalUploadStatus.textContent = '⏳ Uploading to Cloudflare R2...';
+    modalUploadStatus.classList.remove('hidden');
+
+    const fd = new FormData();
+    fd.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: fd
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        modalImgUrl.value = data.url;
+        modalImgAlt.value = file.name.replace(/\.[^/.]+$/, '');
+        modalImgPreview.src = data.url;
+        modalImgPreviewBox.classList.remove('hidden');
+        modalUploadStatus.textContent = '✓ Uploaded successfully to R2!';
+        modalUploadStatus.className = 'text-xs font-semibold text-emerald-700 mt-2';
+      } else {
+        modalUploadStatus.textContent = `❌ ${data.error || 'Upload failed'}`;
+        modalUploadStatus.className = 'text-xs font-semibold text-rose-700 mt-2';
+      }
+    } catch {
+      modalUploadStatus.textContent = '❌ Network error uploading to R2';
+      modalUploadStatus.className = 'text-xs font-semibold text-rose-700 mt-2';
+    }
+  });
+
+  insertImgConfirmBtn.addEventListener('click', () => {
+    const url = modalImgUrl.value.trim();
+    const alt = modalImgAlt.value.trim() || 'Blog illustration';
+    if (!url) {
+      alert('Please upload or enter an image URL.');
+      return;
+    }
+    insertFormatting(`\n\n![${alt}](${url})\n\n`);
+    closeImgModal();
+  });
+
+  // Direct Cover Image R2 Upload
+  coverFileInput.addEventListener('change', async () => {
+    const file = coverFileInput.files?.[0];
+    if (!file) return;
+
+    coverUploadStatus.textContent = '⏳ Uploading cover to R2...';
+    coverUploadStatus.className = 'text-[11px] text-blue-600 font-bold mt-1';
+
+    const fd = new FormData();
+    fd.append('file', file);
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: fd
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        featuredImageInput.value = data.url;
+        coverUploadStatus.textContent = '✓ Cover uploaded to Cloudflare R2!';
+        coverUploadStatus.className = 'text-[11px] text-emerald-600 font-bold mt-1';
+      } else {
+        coverUploadStatus.textContent = `❌ ${data.error || 'Cover upload failed'}`;
+        coverUploadStatus.className = 'text-[11px] text-rose-600 font-bold mt-1';
+      }
+    } catch {
+      coverUploadStatus.textContent = '❌ Network error uploading cover to R2';
+      coverUploadStatus.className = 'text-[11px] text-rose-600 font-bold mt-1';
+    }
+  });
+
+  // Quick preset image buttons
+  document.querySelectorAll('.preset-img-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      const target = e.currentTarget as HTMLElement;
+      const url = target.dataset.url;
+      const alt = target.dataset.alt || 'Tech illustration';
+      if (url) {
+        insertFormatting(`\n\n![${alt}](${url})\n\n`);
+      }
+    });
+  });
+
+  // Tab View Switcher (Write vs Live Preview)
+  tabWrite.addEventListener('click', () => {
+    tabWrite.className = 'px-3 py-1 text-xs font-semibold rounded-md bg-white text-slate-800 shadow-xs';
+    tabPreview.className = 'px-3 py-1 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900';
+    writePanel.classList.remove('hidden');
+    previewPanel.classList.add('hidden');
+  });
+
+  tabPreview.addEventListener('click', () => {
+    tabPreview.className = 'px-3 py-1 text-xs font-semibold rounded-md bg-white text-slate-800 shadow-xs';
+    tabWrite.className = 'px-3 py-1 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900';
+    writePanel.classList.add('hidden');
+    previewPanel.classList.remove('hidden');
+
+    const rawMarkdown = contentInput.value;
+    // @ts-ignore
+    if (window.marked) {
+      // @ts-ignore
+      previewRender.innerHTML = window.marked.parse(rawMarkdown);
+    } else {
+      previewRender.textContent = rawMarkdown;
+    }
+  });
+
+  // Handle Form Submission
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    alertBox.className = 'hidden mb-6 p-4 rounded-xl text-sm font-medium';
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span>Saving to KV...</span>';
+
+    const formData = new FormData(form);
+
+    const payload = {
+      title: formData.get('title'),
+      slug: formData.get('slug'),
+      status: formData.get('status'),
+      excerpt: formData.get('excerpt'),
+      content: formData.get('content'),
+      featured_image: formData.get('featured_image'),
+      featured_image_alt: formData.get('featured_image_alt'),
+      category: formData.get('category'),
+      tags: formData.get('tags'),
+      author_name: formData.get('author_name'),
+      author_bio: formData.get('author_bio'),
+      seo: {
+        meta_title: formData.get('meta_title'),
+        meta_description: formData.get('meta_description'),
+        canonical_url: formData.get('canonical_url'),
+        og_image: formData.get('og_image'),
+        no_index: formData.get('no_index') === 'on'
+      }
+    };
+
+    try {
+      const res = await fetch('/api/posts/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await res.json();
+
+      if (res.ok && result.success) {
+        alertBox.textContent = '✓ Post published successfully into Cloudflare KV!';
+        alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-medium bg-emerald-50 text-emerald-800 border border-emerald-200 block';
+        setTimeout(() => {
+          window.location.href = `/post/${result.slug}`;
+        }, 1200);
+      } else {
+        alertBox.textContent = result.error || 'Failed to save post.';
+        alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-medium bg-rose-50 text-rose-800 border border-rose-200 block';
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span>Save Post to Cloudflare KV</span><span>⚡</span>';
+      }
+    } catch (err) {
+      alertBox.textContent = 'Network or server error while saving to KV.';
+      alertBox.className = 'mb-6 p-4 rounded-xl text-sm font-medium bg-rose-50 text-rose-800 border border-rose-200 block';
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<span>Save Post to Cloudflare KV</span><span>⚡</span>';
+    }
+  });
+</script>
